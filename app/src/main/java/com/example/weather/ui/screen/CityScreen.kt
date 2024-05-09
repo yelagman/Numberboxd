@@ -17,7 +17,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -53,6 +55,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weather.R
 import com.example.weather.data.cityItem
 import com.example.weather.data.showCategory
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,6 +72,10 @@ fun CityScreen(
     var showAddDialog by rememberSaveable {
         mutableStateOf(false)
     }
+    var cityToEdit: cityItem? by rememberSaveable {
+        mutableStateOf(null)
+    }
+
     fun validate() {
         cityErrorState = city.isEmpty()
     }
@@ -105,6 +112,9 @@ fun CityScreen(
                     items(cityViewModel.getAllitems()) {
                         CityCard(it,
                             onRemoveItem = { cityViewModel.removeItem(it) },
+                            onEditItem = {
+                                cityToEdit = it
+                                showAddDialog = true},
                             onNavigateToMain
                         )
                     }
@@ -115,7 +125,8 @@ fun CityScreen(
                     cityViewModel,
                     onDismiss = {
                         showAddDialog = false
-                    }
+                    },
+                    cityToEdit
                 )
             }
 
@@ -128,23 +139,23 @@ fun CityScreen(
 fun AddCityDialog(
     cityViewModel: CityViewModel,
     onDismiss: () -> Unit,
-//    oncityCheckChange: (Boolean) -> Unit = {}
+    cityToEdit: cityItem? = null,
 ){
     var city by rememberSaveable {
-        mutableStateOf("")
+        mutableStateOf(cityToEdit?.city ?:"")
     }
     var showRating by rememberSaveable {
-        mutableStateOf("")
+        mutableStateOf(cityToEdit?.showRating ?:"")
     }
 
     var isFavorite by rememberSaveable {
-        mutableStateOf(true)
+        mutableStateOf(cityToEdit?.isFavorite ?:true)
     }
     var cityErrorState by rememberSaveable { mutableStateOf(false) }
 
     var selectedCategory by rememberSaveable {
         mutableStateOf(
-//            cityToEdit?.category ?:
+            cityToEdit?.showcategory ?:
         showCategory.CurrentlyWatching)
     }
 
@@ -221,15 +232,25 @@ fun AddCityDialog(
                 enabled = !inputErrorState,
                 onClick = {
                     if (city.isNotEmpty()) {
-                        cityViewModel.addToCityList(
-                            cityItem(
+                        if (cityToEdit == null) {
+                            cityViewModel.addToCityList(
+                                cityItem(
+                                    city = city,
+                                    isFavorite = isFavorite,
+                                    showRating = showRating,
+                                    showcategory = selectedCategory
+
+                                )
+                            )
+                        } else {
+                            val editedcity = cityToEdit.copy(
                                 city = city,
                                 isFavorite = isFavorite,
                                 showRating = showRating,
                                 showcategory = selectedCategory
-
                             )
-                        )
+                            cityViewModel.editItem(editedcity)
+                        }
                     }
                 onDismiss()}) {
                 Text(text = stringResource(R.string.save))
@@ -252,6 +273,7 @@ fun AddCityDialog(
 fun CityCard(
     cityItem: cityItem,
     onRemoveItem: () -> Unit = {},
+    onEditItem: (cityItem) -> Unit = {},
     onNavigateToMain: (String) -> Unit,
     cityViewModel: CityViewModel = viewModel(),
 
@@ -283,6 +305,15 @@ fun CityCard(
             Spacer(modifier = Modifier.fillMaxSize(0.55f))
             Spacer(modifier = Modifier.width(10.dp))
             //Add Show Picture Here
+            Row(){
+                Icon(
+                    imageVector = Icons.Filled.Edit,
+                    contentDescription = "Edit",
+                    modifier = Modifier.clickable {
+                        onEditItem(cityItem)
+                    },
+                    tint = Color.Blue
+                )
             Icon(
                 imageVector = Icons.Filled.Delete,
                 contentDescription = "Delete",
@@ -291,6 +322,7 @@ fun CityCard(
                 },
                 tint = Color.Red
             )
+            }
         }
     }
 }

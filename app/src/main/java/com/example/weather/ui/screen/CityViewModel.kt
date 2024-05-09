@@ -27,9 +27,12 @@ class CityViewModel: ViewModel() {
         return _cityList
     }
 
-//    fun editcityItem(editedcity: cityItem) {
-//        return editedcity
-//    }
+    fun editItem(editedCity: cityItem) {
+        val index = _cityList.indexOfFirst { it == editedCity } // Find the index of the edited city item in the list
+        if (index != -1) { // Check if city item is found in the list
+            _cityList[index] = editedCity // Replace the old city item with the edited one in the list
+        }
+    }
 
     fun getCity(cityItem: cityItem): String{
         return cityItem.city
