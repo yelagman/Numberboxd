@@ -2,7 +2,9 @@ package com.example.weather.ui.screen
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.weather.data.cityItem
+import kotlinx.coroutines.launch
 
 class CityViewModel: ViewModel() {
     private var _cityList =
@@ -23,6 +25,16 @@ class CityViewModel: ViewModel() {
 
     fun getAllitems(): List<cityItem> {
         return _cityList
+    }
+
+//    fun editcityItem(editedcity: cityItem) {
+//        return editedcity
+//    }
+
+    fun changecityState(cityItem: cityItem, value: Boolean) {
+        val changedcity = cityItem.copy(
+        )
+        changedcity.isFavorite = value
     }
 
     fun getCity(cityItem: cityItem): String{
