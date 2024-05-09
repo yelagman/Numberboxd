@@ -138,7 +138,7 @@ fun AddCityDialog(
     }
 
     var isFavorite by rememberSaveable {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     var cityErrorState by rememberSaveable { mutableStateOf(false) }
 
@@ -190,19 +190,18 @@ fun AddCityDialog(
             )
         }
 // FOR CHECKING IF FAVORITE OR NOT
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(16.dp)
+                ) {
                 Checkbox(
                     checked = isFavorite,
-//                    onCheckedChange = { oncityCheckChange(it) }
-                    onCheckedChange = { checkValue ->
-                        cityViewModel.changecityState(cityItem(
-                            city = city,
-                            isFavorite = isFavorite,
-                            showRating = showRating,
-                            showcategory = selectedCategory
-
-                        ), checkValue)
+                    onCheckedChange = {
+                        isFavorite = it
                     }
                 )
+                    Text(text = "Favorite")
+                }
 
 
                 //FOR ADDING SHOWS TO LIST

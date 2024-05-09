@@ -31,12 +31,6 @@ class CityViewModel: ViewModel() {
 //        return editedcity
 //    }
 
-    fun changecityState(cityItem: cityItem, value: Boolean) {
-        val changedcity = cityItem.copy(
-        )
-        changedcity.isFavorite = value
-    }
-
     fun getCity(cityItem: cityItem): String{
         return cityItem.city
         }
