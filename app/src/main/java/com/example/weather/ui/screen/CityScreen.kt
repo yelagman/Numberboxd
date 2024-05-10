@@ -239,17 +239,16 @@ fun AddCityDialog(
                                     isFavorite = isFavorite,
                                     showRating = showRating,
                                     showcategory = selectedCategory
-
                                 )
                             )
                         } else {
-                            val editedcity = cityToEdit.copy(
+                            var originalCity = cityToEdit.copy()
+                            var editedcity = cityItem(
                                 city = city,
                                 isFavorite = isFavorite,
                                 showRating = showRating,
-                                showcategory = selectedCategory
-                            )
-                            cityViewModel.editItem(editedcity)
+                                showcategory = selectedCategory)
+                            cityViewModel.editItem(originalCity, editedcity)
                         }
                     }
                 onDismiss()}) {
