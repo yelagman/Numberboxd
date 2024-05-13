@@ -40,6 +40,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,6 +73,11 @@ fun CityScreen(
     var showAddDialog by rememberSaveable {
         mutableStateOf(false)
     }
+
+    var showEditDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     var cityToEdit: cityItem? by rememberSaveable {
         mutableStateOf(null)
     }
@@ -114,7 +120,7 @@ fun CityScreen(
                             onRemoveItem = { cityViewModel.removeItem(it) },
                             onEditItem = {
                                 cityToEdit = it
-                                showAddDialog = true},
+                                showEditDialog = true},
                             onNavigateToMain
                         )
                     }
@@ -125,6 +131,15 @@ fun CityScreen(
                     cityViewModel,
                     onDismiss = {
                         showAddDialog = false
+                    }
+                )
+            }
+
+            if (showEditDialog) {
+                AddCityDialog(
+                    cityViewModel,
+                    onDismiss = {
+                        showEditDialog = false
                     },
                     cityToEdit
                 )
