@@ -2,6 +2,7 @@ package com.example.weather.ui.screen
 
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Create
@@ -106,21 +109,80 @@ fun CityScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddDialog = true }) {
-                Icon(Icons.Filled.Add, "Add Sjow")
+                Icon(Icons.Filled.Add, "Add Show")
             }
         },
         content = {
 
             Column(
-                modifier = Modifier.padding(it)
+                modifier = Modifier
+                    .padding(it)
+                    .verticalScroll(rememberScrollState())
             ) {
+//                LazyRow(modifier = Modifier.fillMaxSize()) {
+//                    items(cityViewModel.getAllitems()) {
+//                        CityCard(it,
+//                            onRemoveItem = { cityViewModel.removeItem(it) },
+//                            onEditItem = {
+//                                cityToEdit = it
+//                                showEditDialog = true},
+//                            onNavigateToMain
+//                        )
+//                    }
+//                }
+                Text(
+                    text = "Favorite Shows",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+
+
                 LazyRow(modifier = Modifier.fillMaxSize()) {
-                    items(cityViewModel.getAllitems()) {
-                        CityCard(it,
+                    items(cityViewModel.getFavoriteitems()) {
+                        CityCard(
+                            it,
                             onRemoveItem = { cityViewModel.removeItem(it) },
                             onEditItem = {
                                 cityToEdit = it
-                                showEditDialog = true},
+                                showEditDialog = true
+                            },
+                            onNavigateToMain
+                        )
+                    }
+                }
+
+                Text(
+                    text = "Currently Watching",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+
+                LazyRow(modifier = Modifier.fillMaxSize()) {
+                    items(cityViewModel.getCurrentlyWatching()) {
+                        CityCard(
+                            it,
+                            onRemoveItem = { cityViewModel.removeItem(it) },
+                            onEditItem = {
+                                cityToEdit = it
+                                showEditDialog = true
+                            },
+                            onNavigateToMain
+                        )
+                    }
+                }
+
+                Text(
+                    text = "Watchlist",
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
+
+                LazyRow(modifier = Modifier.fillMaxSize()) {
+                    items(cityViewModel.getWatchlist()) {
+                        CityCard(
+                            it,
+                            onRemoveItem = { cityViewModel.removeItem(it) },
+                            onEditItem = {
+                                cityToEdit = it
+                                showEditDialog = true
+                            },
                             onNavigateToMain
                         )
                     }
@@ -171,7 +233,7 @@ fun AddCityDialog(
     var selectedCategory by rememberSaveable {
         mutableStateOf(
             cityToEdit?.showcategory ?:
-        showCategory.CurrentlyWatching)
+        showCategory.Currently_Watching)
     }
 
     fun validate() {
@@ -194,7 +256,7 @@ fun AddCityDialog(
             value = city,
             onValueChange = { city = it
                 validate()},
-            label = { Text(text = stringResource(R.string.enter_city_name)) },
+            label = { Text(text = "Enter Show Name") },
             isError = cityErrorState)
 
                 OutlinedTextField(
@@ -208,7 +270,7 @@ fun AddCityDialog(
         if (inputErrorState) {
             Text(
                 text = when {
-                    cityErrorState -> stringResource(R.string.city_cannot_be_empty)
+                    cityErrorState -> "show cannot be empty"
                     else -> ""
                 },
                 color = MaterialTheme.colorScheme.error,

@@ -8,7 +8,7 @@ data class cityItem(
 ) : java.io.Serializable
 
 enum class showCategory {
-    CurrentlyWatching, Watchlist;
+    Currently_Watching, Watchlist;
 
 //    fun getIcon(): Int {
 //        return if (this == FRUIT) R.drawable.fruit

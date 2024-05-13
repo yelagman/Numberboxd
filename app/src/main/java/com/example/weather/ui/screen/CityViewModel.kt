@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weather.data.cityItem
+import com.example.weather.data.showCategory
 import kotlinx.coroutines.launch
 
 class CityViewModel: ViewModel() {
@@ -25,6 +26,18 @@ class CityViewModel: ViewModel() {
 
     fun getAllitems(): List<cityItem> {
         return _cityList
+    }
+
+    fun getFavoriteitems(): List<cityItem>{
+        return _cityList.filter { it.isFavorite }
+    }
+
+    fun getCurrentlyWatching(): List<cityItem>{
+        return _cityList.filter { it.showcategory == showCategory.Currently_Watching }
+    }
+
+    fun getWatchlist(): List<cityItem>{
+        return _cityList.filter { it.showcategory == showCategory.Watchlist }
     }
 
     fun editItem(originalCity: cityItem, editedCity: cityItem) {
