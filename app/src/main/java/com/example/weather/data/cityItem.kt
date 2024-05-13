@@ -5,7 +5,7 @@ data class cityItem(
     val showRating:String,
     var showcategory:showCategory,
     var isFavorite: Boolean
-)
+) : java.io.Serializable
 
 enum class showCategory {
     CurrentlyWatching, Watchlist;
