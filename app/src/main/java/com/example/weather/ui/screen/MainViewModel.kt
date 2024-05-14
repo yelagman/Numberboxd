@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weather.data.WeatherResult
+import com.example.weather.data.TVresult
 import com.example.weather.network.WeatherAPI
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,13 +19,13 @@ class MainViewModel @Inject constructor(
 
     var weatherUiState: WeatherUiState by mutableStateOf(WeatherUiState.Init)
 
-    fun getWeather(city: String, units: String, apiKey: String) {
+    fun getWeather(city: String, units: String, languages: String, page: String, apiKey: String) {
         weatherUiState = WeatherUiState.Loading
 
         viewModelScope.launch {
             try {
 //            starts the network communication and returns a weather object
-                val result = weatherAPI.getWeather(city, units, apiKey)
+                val result = weatherAPI.getWeather(city, units, languages, page, apiKey)
 
                 weatherUiState = WeatherUiState.Success(result)
 
@@ -40,6 +40,6 @@ class MainViewModel @Inject constructor(
 sealed interface WeatherUiState {
     object Init : WeatherUiState
     object Loading : WeatherUiState
-    data class Success(val weatherResult: WeatherResult) : WeatherUiState
+    data class Success(val tvResult: TVresult) : WeatherUiState
     data class Error(val errorMsg: String) : WeatherUiState
 }

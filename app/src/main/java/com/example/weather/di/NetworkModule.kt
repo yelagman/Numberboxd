@@ -23,7 +23,7 @@ object NetworkModule {
                     ignoreUnknownKeys = true
                 }.asConverterFactory("application/json".toMediaType())
             )
-            .baseUrl("https://api.openweathermap.org")
+            .baseUrl("https://api.themoviedb.org")
             .build()
     }
 

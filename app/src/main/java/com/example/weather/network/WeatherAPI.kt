@@ -1,6 +1,6 @@
 package com.example.weather.network
 
-import com.example.weather.data.WeatherResult
+import com.example.weather.data.TVresult
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -23,11 +23,17 @@ import retrofit2.http.Query
 // &
 // appid=808ec91591e0ff979a1e618ee2462adb
 
+//https://api.themoviedb.org/
+// PATH: 3/search/tv?
+// query=Stranger%20Things&include_adult=false&language=en-US&page=1
+
 interface WeatherAPI {
-    @GET("data/2.5/weather")
+    @GET("3/search/tv")
     suspend fun getWeather(
-        @Query("q") city: String,
-        @Query("units") units: String,
-        @Query("appid") apiKey: String
-    ) : WeatherResult
+        @Query("query") city: String,
+        @Query("include_adult") units: String,
+        @Query("languages") languages: String,
+        @Query("page") page: String,
+        @Query("api_key") apiKey: String
+    ) : TVresult
 }

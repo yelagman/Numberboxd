@@ -28,6 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,6 +56,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weather.R
 import com.example.weather.data.cityItem
@@ -217,6 +219,7 @@ fun AddCityDialog(
     cityViewModel: CityViewModel,
     onDismiss: () -> Unit,
     cityToEdit: cityItem? = null,
+    mainViewModel: MainViewModel = hiltViewModel(),
 ){
     var city by rememberSaveable {
         mutableStateOf(cityToEdit?.city ?:"")
@@ -252,12 +255,45 @@ fun AddCityDialog(
                 Modifier.padding(16.dp)
             ) {
 
-        OutlinedTextField(
-            value = city,
-            onValueChange = { city = it
-                validate()},
-            label = { Text(text = "Enter Show Name") },
-            isError = cityErrorState)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    OutlinedTextField(
+                        value = city,
+                        onValueChange = {
+                            city = it
+                            validate()
+                        },
+                        label = { Text(text = "Enter Show Name") },
+                        isError = cityErrorState
+                    )
+                    Button(
+                        onClick = {
+                            mainViewModel.getWeather(city, "false", "en-US","1","99480a5bb921928dfcd1f3500af47f77")
+
+                            Column {
+
+                                when (mainViewModel.weatherUiState) {
+                                    is WeatherUiState.Init -> {}
+                                    is WeatherUiState.Loading -> CircularProgressIndicator()
+                                    is WeatherUiState.Success ->
+                                        WeatherPhotoCard(
+                                            (mainViewModel.weatherUiState as WeatherUiState.Success).tvResult,
+                                            cityLocation
+                                        )
+                                    is WeatherUiState.Error -> Text(
+                                        text = "Error: " +
+                                                "${(mainViewModel.weatherUiState as WeatherUiState.Error).errorMsg}"
+                                    )
+                                }
+                            }
+                    }
+
+                    ) {
+                    Text(text = "Search")
+                }
+                }
 
                 OutlinedTextField(
                     value = showRating,
